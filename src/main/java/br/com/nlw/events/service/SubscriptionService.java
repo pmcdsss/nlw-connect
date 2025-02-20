@@ -34,10 +34,14 @@ public class SubscriptionService {
         if (userExist == null)
             userExist = userRepository.save(user);
 
-        User indicator = userRepository.findById(userId).orElse(null);
-            //Optional<User> indicator = userRepository.findById(userId);
-        if (indicator == null)
-            throw new UserIndicatorNotFoundException("Usuário indicador não existe.");
+        User indicator = null;
+
+        if (userId != null)
+        {
+            indicator= userRepository.findById(userId).orElse(null);
+            if (indicator == null)
+                throw new UserIndicatorNotFoundException("Usuário indicador não existe.");
+        }
 
         Subscription subscription = subscriptionRepository.findByEventAndSubscriber(event, userExist);
         if (subscription != null)
