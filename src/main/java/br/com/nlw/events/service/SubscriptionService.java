@@ -23,10 +23,13 @@ public class SubscriptionService {
         Subscription subscription = new Subscription();
 
         Event event = eventRepository.findByPrettyName(eventName);
-        user = userRepository.save(user);
+        User userExist = userRepository.findByEmail(user.getEmail());
+
+        if (userExist == null)
+            userExist = userRepository.save(user);
 
         subscription.setEvent(event);
-        subscription.setSubscriber(user);
+        subscription.setSubscriber(userExist);
 
         return subscriptionRepository.save(subscription);
     }
