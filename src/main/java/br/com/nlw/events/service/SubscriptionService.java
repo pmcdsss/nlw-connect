@@ -1,5 +1,6 @@
 package br.com.nlw.events.service;
 
+import br.com.nlw.events.dto.SubscriptionResponse;
 import br.com.nlw.events.exception.EventNotFoundException;
 import br.com.nlw.events.exception.SubscriptionConflictException;
 import br.com.nlw.events.model.Event;
@@ -21,7 +22,7 @@ public class SubscriptionService {
     @Autowired
     private UserRepository userRepository;
 
-    public Subscription createNewSubscription(String eventName, User user) {
+    public SubscriptionResponse createNewSubscription(String eventName, User user) {
         Event event = eventRepository.findByPrettyName(eventName);
         if (event == null)
             throw new EventNotFoundException("Evento "+ eventName + " não encontrado.");
@@ -37,7 +38,9 @@ public class SubscriptionService {
         subscription = new Subscription();
         subscription.setEvent(event);
         subscription.setSubscriber(userExist);
+        subscriptionRepository.save(subscription);
 
-        return subscriptionRepository.save(subscription);
+        return new SubscriptionResponse(subscription.getSubscriptionNumber(),
+                                        "http://codecraft.com/"+subscription.getEvent().getPrettyName()+"/"+subscription.getSubscriber().getId());
     }
 }
