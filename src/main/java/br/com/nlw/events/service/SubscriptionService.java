@@ -1,5 +1,6 @@
 package br.com.nlw.events.service;
 
+import br.com.nlw.events.exception.EventNotFoundException;
 import br.com.nlw.events.model.Event;
 import br.com.nlw.events.model.Subscription;
 import br.com.nlw.events.model.User;
@@ -23,6 +24,10 @@ public class SubscriptionService {
         Subscription subscription = new Subscription();
 
         Event event = eventRepository.findByPrettyName(eventName);
+
+        if (event == null)
+            throw new EventNotFoundException("Evento "+ eventName + " não encontrado.");
+
         User userExist = userRepository.findByEmail(user.getEmail());
 
         if (userExist == null)

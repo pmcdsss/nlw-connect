@@ -1,5 +1,7 @@
 package br.com.nlw.events.controller;
 
+import br.com.nlw.events.dto.ErrorMessage;
+import br.com.nlw.events.exception.EventNotFoundException;
 import br.com.nlw.events.model.Subscription;
 import br.com.nlw.events.model.User;
 import br.com.nlw.events.service.SubscriptionService;
@@ -16,12 +18,16 @@ public class SubscriptionController {
     private SubscriptionService subscriptionService;
 
     @PostMapping("/subscription/{prettyName}")
-    public ResponseEntity<Subscription> createSubscription(@PathVariable String prettyName, @RequestBody User subscriber) {
-        Subscription subscription = subscriptionService.createNewSubscription(prettyName, subscriber);
+    public ResponseEntity<?> createSubscription(@PathVariable String prettyName, @RequestBody User subscriber) {
+        try{
+            Subscription subscription = subscriptionService.createNewSubscription(prettyName, subscriber);
 
-        if (subscription != null)
-            return ResponseEntity.ok(subscription);
+            if (subscription != null)
+                return ResponseEntity.ok(subscription);
 
+        } catch (EventNotFoundException e) {
+            return ResponseEntity.status(404).body(new ErrorMessage(e.getMessage()));
+        }
         return ResponseEntity.badRequest().build();
     }
 }
