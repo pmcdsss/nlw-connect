@@ -44,4 +44,14 @@ public class SubscriptionController {
             return ResponseEntity.status(404).body(new ErrorMessage(e.getMessage()));
         }
     }
+
+    @GetMapping("/subscription/{prettyName}/ranking/{userId}")
+    public ResponseEntity<?> generateRankingByEventAndUser(@PathVariable String prettyName,
+                                                           @PathVariable Integer userId){
+        try {
+            return ResponseEntity.ok(subscriptionService.getRankingPositionByUser(prettyName, userId));
+        } catch(UserIndicatorNotFoundException e) {
+            return ResponseEntity.status(404).body(new ErrorMessage(e.getMessage()));
+        }
+    }
 }
